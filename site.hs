@@ -4,10 +4,14 @@ import           Data.Monoid (mappend)
 import           Utils.Time (frTimeLocale)
 import           Hakyll
 
+hackyllConfig :: Configuration
+hackyllConfig = defaultConfiguration {
+  deployCommand = "bash deploy.sh"
+}
 
 --------------------------------------------------------------------------------
 main :: IO ()
-main = hakyll $ do
+main = hakyllWith hackyllConfig $ do
     match "images/*" $ do
         route   idRoute
         compile copyFileCompiler
@@ -16,7 +20,7 @@ main = hakyll $ do
         route   idRoute
         compile compressCssCompiler
 
-    match (fromList ["about.rst", "contact.markdown"]) $ do
+    match (fromList ["about.md", "contact.md"]) $ do
         route   $ setExtension "html"
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
